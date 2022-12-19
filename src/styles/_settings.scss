@@ -1,0 +1,35 @@
+@font-face {
+  font-family: "title-font";
+  src: url(../assets/fonts/Raleway-ExtraBold.ttf);
+}
+
+$title-font: "title-font", sans-serif;
+
+$color1: skyblue;
+$title-color: rgb(165, 165, 165);
+$txt-color: rgb(241, 241, 241);
+$bg-color: rgb(40, 40, 40);
+
+body {
+  background: $bg-color;
+  color: $txt-color;
+  //margin: 0 15%;
+}
+
+h1 {
+  font-family: $title-font;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  color: $title-color;
+  font-size: 34px;
+  padding: 0 35%;
+  margin-top: 50px;
+}
+
+p {
+  color: $txt-color;
+  flex: content;
+  flex-direction: column;
+  text-align: justify;
+  padding: 0 35%;
+}

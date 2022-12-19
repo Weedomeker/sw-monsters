@@ -1,31 +1,17 @@
-import { useState } from 'react'
-
-function App() {
-  // States
-  let [number, setNumber] = useState(0)
-
-  // Comportements
-  const handleClickIncremente = () => {
-    setNumber(number + 1)
-  }
-  const handleClickDecremente = () => {
-    number <= 0 ? setNumber(0) : setNumber(number - 1)
-  }
-
-  // Affichage rendu
+import React from "react";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import About from "./pages/About";
+import Home from "./pages/Home";
+const App = () => {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h2>My number: {number}</h2>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/*" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
-      <button type="button" onClick={handleClickIncremente}>
-        +1
-      </button>
-      <button type="button" onClick={handleClickDecremente}>
-        -1
-      </button>
-      {/* { number ? number < 1 : setNumber(number === 0) } */}
-    </div>
-  )
-}
-
-export default App
+export default App;
