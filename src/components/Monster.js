@@ -16,18 +16,54 @@ function Monster() {
       while (nextPage) {
         try {
           const res = await axios.get(nextPage);
-          allMonsters = allMonsters.concat(res.data.results);
-          nextPage = res.data.next;
+          if (res.data.results) {
+            allMonsters = allMonsters.concat(res.data.results);
+          }
+          if (res.data.next) {
+            // Extract page number from next URL
+            const page = res.data.next.match(/page=(\d+)/)[1];
+            // Reconstruct next URL using base URL of server and route
+            nextPage = `${config.baseUrl}/monsters/page/${page}`;
+          } else {
+            nextPage = null;
+          }
         } catch (err) {
           console.error(err);
-          setError(new Error("An error occurred while fetching monsters"));
+          let errorMessage =
+            "Une erreur s'est produite lors de la récupération des monstres";
+          if (err.response) {
+            errorMessage += `: ${err.response.status}`;
+            if (err.response.data && err.response.data.error) {
+              errorMessage += ` - ${err.response.data.error}`;
+            }
+          }
+          setError(new Error(errorMessage));
           setLoading(false);
           return;
         }
       }
 
+      // Remove duplicates from allMonsters array
+      const uniqueMonsters = allMonsters.filter((monster, index, self) => {
+        return self.indexOf(monster) === index;
+      });
+
+      // Remove Korean elements from uniqueMonsters array
+      const nonKoreanMonsters = uniqueMonsters.filter((monster) => {
+        // Check if monster name or description exist and do not contain Korean characters
+        return (
+          !(monster.name && monster.name.match(/[\u3131-\uD79D]/g)) &&
+          !(
+            monster.description && monster.description.match(/[\u3131-\uD79D]/g)
+          )
+        );
+      });
+
+      const filteredMonsters = nonKoreanMonsters.filter((monster) => {
+        return monster.obtainable;
+      });
       setLoading(false);
-      setMonsters(allMonsters);
+      setMonsters(filteredMonsters);
     };
 
     fetchMonsters();

@@ -20,6 +20,19 @@ app.get("/:route", (req, res) => {
     });
 });
 
+app.get("/monsters/page/:page", (req, res) => {
+  const page = req.params.page;
+  axios
+    .get(`${baseUrl}monsters/?page=${page}`)
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(`Error fetching monsters data for page ${page}`);
+    });
+});
+
 app.get("/*", (req, res) => {
   res.json({
     news: "/news/",
