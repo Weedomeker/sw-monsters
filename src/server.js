@@ -1,11 +1,20 @@
 const express = require("express");
-const axios = require("axios");
+const cp = require("cookie-parser");
+const Axios = require("axios");
+const { setupCache, buildMemoryStorage } = require("axios-cache-interceptor");
 const cors = require("cors");
 const PORT = 5000;
 const app = express();
 const baseUrl = "https://swarfarm.com/api/v2/";
 
+const axios = setupCache(Axios, { storage: buildMemoryStorage() });
+
 app.use(cors());
+app.use(cp());
+
+app.get("/favicon.ico", (req, res) => {
+  res.sendStatus(204).end();
+});
 
 app.get("/:route", (req, res) => {
   const route = req.params.route;
@@ -18,6 +27,7 @@ app.get("/:route", (req, res) => {
       console.error(error);
       res.status(500).send(`Error fetching ${route} data`);
     });
+  res.cookie("Monsters", "", { maxAge: 5 * 60 * 1000, sameSite: "lax" });
 });
 
 app.get("/monsters/page/:page", (req, res) => {

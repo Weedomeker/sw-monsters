@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import config from "../config";
+import { Dimmer, Loader, Image, Segment } from "semantic-ui-react";
 import Card from "./Card";
 
 function Monster() {
   const [monsters, setMonsters] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [rangeValue, setRangeValue] = useState(36);
+  const [selectedRadio, setSelectedValue] = useState("");
+  const radio = ["Fire", "Water", "Wind", "Dark", "Light"];
+  const resetRadio = () => {
+    setSelectedValue("");
+  };
 
   useEffect(() => {
     const fetchMonsters = async () => {
       let allMonsters = [];
-      let nextPage = `${config.baseUrl}/monsters`;
+      let nextPage = `/monsters`;
 
       while (nextPage) {
         try {
@@ -23,7 +29,7 @@ function Monster() {
             // Extract page number from next URL
             const page = res.data.next.match(/page=(\d+)/)[1];
             // Reconstruct next URL using base URL of server and route
-            nextPage = `${config.baseUrl}/monsters/page/${page}`;
+            nextPage = `/monsters/page/${page}`;
           } else {
             nextPage = null;
           }
@@ -48,18 +54,7 @@ function Monster() {
         return self.indexOf(monster) === index;
       });
 
-      // Remove Korean elements from uniqueMonsters array
-      const nonKoreanMonsters = uniqueMonsters.filter((monster) => {
-        // Check if monster name or description exist and do not contain Korean characters
-        return (
-          !(monster.name && monster.name.match(/[\u3131-\uD79D]/g)) &&
-          !(
-            monster.description && monster.description.match(/[\u3131-\uD79D]/g)
-          )
-        );
-      });
-
-      const filteredMonsters = nonKoreanMonsters.filter((monster) => {
+      const filteredMonsters = uniqueMonsters.filter((monster) => {
         return monster.obtainable;
       });
       setLoading(false);
@@ -70,7 +65,20 @@ function Monster() {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+        }}
+      >
+        <Loader active inline="centered" size="big">
+          Loading
+        </Loader>
+      </div>
+    );
   }
 
   if (error) {
@@ -82,18 +90,63 @@ function Monster() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        flexDirection: "row",
-      }}
-    >
-      {monsters.length > 0 ? (
-        monsters.map((monster) => <Card key={monster.id} monster={monster} />)
-      ) : (
-        <p>No monsters found</p>
+    <div className="monsters">
+      <ul
+        style={{
+          listStyle: "none",
+          display: "flex",
+          alignContent: "center",
+        }}
+      >
+        <input
+          type="range"
+          min="1"
+          max="2078"
+          step="0.5"
+          maxLength="200"
+          defaultValue={rangeValue}
+          onChange={(e) => setRangeValue(e.target.value)}
+        />
+        {radio.map((element, i) => (
+          <li key={i} style={{ padding: "10px" }}>
+            <input
+              type="radio"
+              id={element}
+              name="elementRadio"
+              checked={selectedRadio === element}
+              onChange={(e) => {
+                setSelectedValue(e.target.id);
+              }}
+            />
+            <label htmlFor={element}>{element}</label>
+          </li>
+        ))}
+      </ul>
+      {selectedRadio && (
+        <button
+          onClick={() => {
+            setSelectedValue("");
+          }}
+        >
+          Annuler la recherche
+        </button>
       )}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          flexDirection: "row",
+        }}
+      >
+        {monsters.length > 0 ? (
+          monsters
+            .filter((monster) => monster.element.includes(selectedRadio))
+            .slice(0, rangeValue)
+            .map((monster) => <Card key={monster.id} monster={monster} />)
+        ) : (
+          <p>No monsters found</p>
+        )}
+      </div>
     </div>
   );
 }

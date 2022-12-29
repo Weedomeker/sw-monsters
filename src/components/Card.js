@@ -1,6 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 const Card = ({ monster }) => {
+  const imgApi = `https://swarfarm.com/static/herders/images/monsters/${monster.image_filename}`;
+
   return (
     <div>
       <img
@@ -11,7 +13,7 @@ const Card = ({ monster }) => {
           border: "1px solid ##9FC6FF",
           backgroundColor: "transparent",
         }}
-        src={`https://swarfarm.com/static/herders/images/monsters/${monster.image_filename}`}
+        src={imgApi}
         alt={monster.name}
       />
     </div>
