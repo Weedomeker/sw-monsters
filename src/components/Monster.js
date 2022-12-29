@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Dimmer, Loader, Image, Segment } from "semantic-ui-react";
+import { Loader } from "semantic-ui-react";
 import Card from "./Card";
-
 function Monster() {
   const [monsters, setMonsters] = useState([]);
   const [error, setError] = useState(null);
@@ -10,12 +9,16 @@ function Monster() {
   const [rangeValue, setRangeValue] = useState(36);
   const [selectedRadio, setSelectedValue] = useState("");
   const radio = ["Fire", "Water", "Wind", "Dark", "Light"];
-  const resetRadio = () => {
-    setSelectedValue("");
-  };
 
   useEffect(() => {
     const fetchMonsters = async () => {
+      // Vérifie si les données sont déjà présentes dans le cache
+      const cachedMonsters = localStorage.getItem("monsters");
+      if (cachedMonsters) {
+        // Si oui, utilise les données du cache
+        setMonsters(JSON.parse(cachedMonsters));
+      }
+
       let allMonsters = [];
       let nextPage = `/monsters`;
 
@@ -24,6 +27,7 @@ function Monster() {
           const res = await axios.get(nextPage);
           if (res.data.results) {
             allMonsters = allMonsters.concat(res.data.results);
+            localStorage.setItem("monsters", JSON.stringify(allMonsters));
           }
           if (res.data.next) {
             // Extract page number from next URL
