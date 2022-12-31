@@ -43,7 +43,7 @@ app.get("/monsters/page/:page", (req, res) => {
 app.get("*", (res, req) => {
   res.sendFile(path.join(__dirname, "/build/index.html"));
 });
-app.get("/*", (req, res) => {
+app.get("/help", (req, res) => {
   res.json({
     news: "/news/",
     monsters: "/monsters/",
