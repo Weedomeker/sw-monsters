@@ -1,8 +1,11 @@
+require("dotenv").config();
 const express = require("express");
+const path = require("path");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const axios = require("axios");
 const cors = require("cors");
-const PORT = 5000;
+const HOSTNAME = process.env.SERVER_HOSTNAME;
+const PORT = process.env.SERVER_PORT || 8000;
 const app = express();
 const baseUrl = "https://swarfarm.com/api/v2/";
 
@@ -14,6 +17,8 @@ app.use(
     changeOrigin: true,
   })
 );
+
+app.use(express.static(path.resolve(__dirname, "../build/static")));
 
 app.get("/favicon.ico", (req, res) => {
   res.sendStatus(204).end();
@@ -68,6 +73,6 @@ app.get("/*", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server started on port: ${PORT}`);
+app.listen(PORT, HOSTNAME, () => {
+  console.log(`Server running at http://${HOSTNAME}:${PORT}`);
 });
