@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Loader, Button, Input } from "semantic-ui-react";
 import Card from "./Card";
+let SERVER_HOSTNAME;
+SERVER_HOSTNAME = process.env.REACT_APP_BACKEND_BASEURL;
+console.log(process.env.NODE_ENV);
 function Monster() {
   const [monsters, setMonsters] = useState([]);
   const [error, setError] = useState(null);
@@ -28,7 +31,7 @@ function Monster() {
       }
 
       let allMonsters = [];
-      let nextPage = `/monsters`;
+      let nextPage = `${SERVER_HOSTNAME}/monsters`;
 
       while (nextPage) {
         try {
@@ -40,7 +43,7 @@ function Monster() {
             // Extract page number from next URL
             const page = res.data.next.match(/page=(\d+)/)[1];
             // Reconstruct next URL using base URL of server and route
-            nextPage = `/monsters/page/${page}`;
+            nextPage = `${SERVER_HOSTNAME}/monsters/page/${page}`;
           } else {
             nextPage = null;
           }

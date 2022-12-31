@@ -1,21 +1,14 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const { createProxyMiddleware } = require("http-proxy-middleware");
 const axios = require("axios");
 const cors = require("cors");
+
 const PORT = process.env.SERVER_PORT || 8000;
 const app = express();
 const baseUrl = "https://swarfarm.com/api/v2/";
-
+console.log(process.env.NODE_ENV);
 app.use(cors());
-app.use(
-  "/",
-  createProxyMiddleware({
-    target: "https://sw-monsters-weedo.herokuapp.com/",
-    changeOrigin: true,
-  })
-);
 
 app.use(express.static(path.resolve(__dirname, "../build")));
 
@@ -34,7 +27,6 @@ app.get("/:route", (req, res) => {
       console.error(error);
       res.status(500).send(`Error fetching ${route} data`);
     });
-  res.cookie("Monsters", "", { maxAge: 5 * 60 * 1000, sameSite: "lax" });
 });
 
 app.get("/monsters/page/:page", (req, res) => {
@@ -73,5 +65,5 @@ app.get("/*", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at port: ${PORT}`);
+  console.log(`Server running at port:${PORT}`);
 });
