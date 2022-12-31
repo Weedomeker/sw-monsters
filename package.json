@@ -23,7 +23,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start-client": "react-scripts start",
+    "start": "node /src/server.js",
     "server": "nodemon --quiet ./src/server",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "build": "react-scripts build",
