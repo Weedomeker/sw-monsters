@@ -1,10 +1,9 @@
-require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const axios = require("axios");
 const cors = require("cors");
 
-const PORT = process.env.SERVER_PORT || 8000;
+const PORT = process.env.PORT || 5000;
 const app = express();
 const baseUrl = "https://swarfarm.com/api/v2/";
 console.log(process.env.NODE_ENV);
@@ -41,7 +40,9 @@ app.get("/monsters/page/:page", (req, res) => {
       res.status(500).send(`Error fetching monsters data for page ${page}`);
     });
 });
-
+// app.get("*", (res, req) => {
+//   res.sendFile(path.join(__dirname, "/build/index.html"));
+// });
 app.get("/*", (req, res) => {
   res.json({
     news: "/news/",
