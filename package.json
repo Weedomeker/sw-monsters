@@ -9,8 +9,6 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.1",
-    "axios-cache-interceptor": "^1.0.0",
-    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -26,7 +24,7 @@
     "server": "nodemon --quiet ./src/server",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "build": "react-scripts build",
-    "deploy": "",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
