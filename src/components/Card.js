@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 
 const Card = ({ monster }) => {
   const imgApi = `https://swarfarm.com/static/herders/images/monsters/${monster.image_filename}`;

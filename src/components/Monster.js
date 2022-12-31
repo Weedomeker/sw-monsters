@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Loader } from "semantic-ui-react";
+import { Loader, Button, Input } from "semantic-ui-react";
 import Card from "./Card";
 function Monster() {
   const [monsters, setMonsters] = useState([]);
@@ -8,6 +8,7 @@ function Monster() {
   const [loading, setLoading] = useState(true);
   const [rangeValue, setRangeValue] = useState(36);
   const [selectedRadio, setSelectedValue] = useState("");
+  const [inputSearch, setInputSearch] = useState("");
   const radio = ["Fire", "Water", "Wind", "Dark", "Light"];
 
   useEffect(() => {
@@ -16,7 +17,14 @@ function Monster() {
       const cachedMonsters = localStorage.getItem("monsters");
       if (cachedMonsters) {
         // Si oui, utilise les données du cache
-        setMonsters(JSON.parse(cachedMonsters));
+        const filtredCachedMonsters = JSON.parse(cachedMonsters).filter(
+          (monster) => {
+            return monster.obtainable;
+          }
+        );
+        setMonsters(filtredCachedMonsters);
+        setLoading(false);
+        return;
       }
 
       let allMonsters = [];
@@ -27,7 +35,6 @@ function Monster() {
           const res = await axios.get(nextPage);
           if (res.data.results) {
             allMonsters = allMonsters.concat(res.data.results);
-            localStorage.setItem("monsters", JSON.stringify(allMonsters));
           }
           if (res.data.next) {
             // Extract page number from next URL
@@ -53,18 +60,13 @@ function Monster() {
         }
       }
 
-      // Remove duplicates from allMonsters array
-      const uniqueMonsters = allMonsters.filter((monster, index, self) => {
-        return self.indexOf(monster) === index;
-      });
-
-      const filteredMonsters = uniqueMonsters.filter((monster) => {
+      const filteredMonsters = allMonsters.filter((monster) => {
         return monster.obtainable;
       });
       setLoading(false);
       setMonsters(filteredMonsters);
+      localStorage.setItem("monsters", JSON.stringify(allMonsters));
     };
-
     fetchMonsters();
   }, []);
 
@@ -93,6 +95,13 @@ function Monster() {
     );
   }
 
+  const uniqueMonsters = Array.from(
+    new Set(monsters.map((monster) => monster.name))
+  );
+  const suggestions = uniqueMonsters.map((monsterName) => {
+    return { title: monsterName };
+  });
+
   return (
     <div className="monsters">
       <ul
@@ -102,6 +111,29 @@ function Monster() {
           alignContent: "center",
         }}
       >
+        {/* Input Text Selection */}
+        <li style={{ paddingRight: "25px" }}>
+          <Input
+            size="mini"
+            id="monster-search"
+            list="monsters"
+            placeholder="Rechercher un monstre..."
+            defaultValue={inputSearch}
+            onChange={(e) => {
+              setInputSearch(e.target.value);
+            }}
+          />
+          <datalist id="monsters">
+            {suggestions.map((suggestion, index) => (
+              <option
+                key={`${index}: ${suggestion.title}`}
+                value={suggestion.title}
+              />
+            ))}
+          </datalist>
+        </li>
+
+        {/* Range Selection */}
         <input
           type="range"
           min="1"
@@ -111,6 +143,7 @@ function Monster() {
           defaultValue={rangeValue}
           onChange={(e) => setRangeValue(e.target.value)}
         />
+        {/* Radio Selection */}
         {radio.map((element, i) => (
           <li key={i} style={{ padding: "10px" }}>
             <input
@@ -125,16 +158,21 @@ function Monster() {
             <label htmlFor={element}>{element}</label>
           </li>
         ))}
+        {selectedRadio && (
+          <Button
+            compact
+            inverted
+            color="orange"
+            size="mini"
+            onClick={() => {
+              setSelectedValue("");
+            }}
+          >
+            Annuler la recherche
+          </Button>
+        )}
       </ul>
-      {selectedRadio && (
-        <button
-          onClick={() => {
-            setSelectedValue("");
-          }}
-        >
-          Annuler la recherche
-        </button>
-      )}
+
       <div
         style={{
           display: "flex",
@@ -144,7 +182,11 @@ function Monster() {
       >
         {monsters.length > 0 ? (
           monsters
-            .filter((monster) => monster.element.includes(selectedRadio))
+            .filter(
+              (monster) =>
+                monster.element.includes(selectedRadio) &&
+                monster.name.includes(inputSearch)
+            )
             .slice(0, rangeValue)
             .map((monster) => <Card key={monster.id} monster={monster} />)
         ) : (

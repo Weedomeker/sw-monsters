@@ -1,5 +1,6 @@
 {
-  "name": "test-react",
+  "homepage": "https://weedomeker.github.io/sw-monsters",
+  "name": "sw-monster",
   "version": "0.1.0",
   "proxy": "http://localhost:5000",
   "private": true,
@@ -25,6 +26,7 @@
     "server": "nodemon --quiet ./src/server",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "build": "react-scripts build",
+    "deploy": "",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -42,6 +44,7 @@
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
+    "gh-pages": "^4.0.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.1"
   }
