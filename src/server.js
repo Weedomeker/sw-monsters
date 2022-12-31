@@ -40,9 +40,9 @@ app.get("/monsters/page/:page", (req, res) => {
       res.status(500).send(`Error fetching monsters data for page ${page}`);
     });
 });
-// app.get("*", (res, req) => {
-//   res.sendFile(path.join(__dirname, "/build/index.html"));
-// });
+app.get("*", (res, req) => {
+  res.sendFile(path.join(__dirname, "/build/index.html"));
+});
 app.get("/*", (req, res) => {
   res.json({
     news: "/news/",
