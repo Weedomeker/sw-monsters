@@ -1,4 +1,5 @@
 const express = require("express");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 const axios = require("axios");
 const cors = require("cors");
 const PORT = 5000;
@@ -6,6 +7,13 @@ const app = express();
 const baseUrl = "https://swarfarm.com/api/v2/";
 
 app.use(cors());
+app.use(
+  "/",
+  createProxyMiddleware({
+    target: "https://sw-monsters-weedo.herokuapp.com/",
+    changeOrigin: true,
+  })
+);
 
 app.get("/favicon.ico", (req, res) => {
   res.sendStatus(204).end();
