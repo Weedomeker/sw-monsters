@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Loader, Button, Input } from "semantic-ui-react";
+import { Button, Input, Progress } from "semantic-ui-react";
 import Card from "./Card";
+import isDev from "../isDev";
+import ricaLoading from "../assets/img/loading/ricaLoader.gif";
+import lushenLoading from "../assets/img/loading/lushenLoader.gif";
+import endLoading from "../assets/img/loading/endLoading.gif";
+import startLoading from "../assets/img/loading/startLoading.gif";
+
 function Monster() {
   const [monsters, setMonsters] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [rangeValue, setRangeValue] = useState(36);
+  const [progress, setProgress] = useState(0);
+  const [rangeValue, setRangeValue] = useState(100);
   const [selectedRadio, setSelectedValue] = useState("");
   const [inputSearch, setInputSearch] = useState("");
   const radio = ["Fire", "Water", "Wind", "Dark", "Light"];
@@ -35,6 +42,9 @@ function Monster() {
           const res = await axios.get(nextPage);
           if (res.data.results) {
             allMonsters = allMonsters.concat(res.data.results);
+            setProgress(
+              Math.round((allMonsters.length / res.data.count) * 100)
+            );
           }
           if (res.data.next) {
             // Extract page number from next URL
@@ -65,24 +75,41 @@ function Monster() {
       });
       setLoading(false);
       setMonsters(filteredMonsters);
-      localStorage.setItem("monsters", JSON.stringify(allMonsters));
+      console.log(isDev ? "Development" : "Production");
+      !isDev && localStorage.setItem("monsters", JSON.stringify(allMonsters));
     };
     fetchMonsters();
   }, []);
 
   if (loading) {
+    const switchImg = () => {
+      let className = "image";
+      if (progress > 0 && progress <= 25) {
+        className += " show";
+        return <img src={startLoading} alt="loading" className={className} />;
+      } else if (progress > 25 && progress <= 50) {
+        className += " show";
+        return <img src={ricaLoading} alt="loading" className={className} />;
+      } else if (progress > 50 && progress <= 75) {
+        className += " show";
+        return <img src={lushenLoading} alt="loading" className={className} />;
+      } else if (progress > 75 && progress <= 100) {
+        className += " show";
+        return <img src={endLoading} alt="loading" className={className} />;
+      } else {
+        return;
+      }
+    };
+
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-        }}
-      >
-        <Loader active inline="centered" size="big">
-          Loading
-        </Loader>
+      <div className="loading">
+        {switchImg()}
+        <Progress percent={progress} indicating>
+          <h2>
+            Chargement des monstres en cours:
+            <p>{progress} %</p>
+          </h2>
+        </Progress>
       </div>
     );
   }
@@ -101,20 +128,29 @@ function Monster() {
   const suggestions = uniqueMonsters.map((monsterName) => {
     return { title: monsterName };
   });
+  const changeColorButton = () => {
+    switch (selectedRadio) {
+      case "Fire":
+        return "orange";
+      case "Water":
+        return "blue";
+      case "Wind":
+        return "yellow";
+      case "Dark":
+        return "purple";
+      case "Light":
+        return "";
+      default:
+        return "";
+    }
+  };
 
   return (
     <div className="monsters">
-      <ul
-        style={{
-          listStyle: "none",
-          display: "flex",
-          alignContent: "center",
-        }}
-      >
+      <ul className="radio-container">
         {/* Input Text Selection */}
-        <li style={{ paddingRight: "25px" }}>
+        <li>
           <Input
-            size="mini"
             id="monster-search"
             list="monsters"
             placeholder="Rechercher un monstre..."
@@ -133,19 +169,37 @@ function Monster() {
           </datalist>
         </li>
 
-        {/* Range Selection */}
-        <input
-          type="range"
-          min="1"
-          max="2078"
-          step="0.5"
-          maxLength="200"
-          defaultValue={rangeValue}
-          onChange={(e) => setRangeValue(e.target.value)}
-        />
+        <li>
+          {/* Range Selection */}
+          <label htmlFor="rangeSelect" className="labelRange">
+            Monstres affiché(s):
+            {
+              monsters
+                .filter(
+                  (monster) =>
+                    monster.element.includes(selectedRadio) &&
+                    monster.name.includes(inputSearch)
+                )
+                .slice(0, rangeValue).length
+            }
+          </label>
+          <br />
+          <input
+            name="rangeSelect"
+            type="range"
+            min="1"
+            max={monsters.length}
+            step="1"
+            maxLength="200"
+            defaultValue={rangeValue}
+            onChange={(e) => {
+              setRangeValue(e.target.value);
+            }}
+          />
+        </li>
         {/* Radio Selection */}
         {radio.map((element, i) => (
-          <li key={i} style={{ padding: "10px" }}>
+          <li key={i}>
             <input
               type="radio"
               id={element}
@@ -158,12 +212,13 @@ function Monster() {
             <label htmlFor={element}>{element}</label>
           </li>
         ))}
+      </ul>
+      <div className="buttonAnnuler">
         {selectedRadio && (
           <Button
             compact
             inverted
-            color="orange"
-            size="mini"
+            color={changeColorButton()}
             onClick={() => {
               setSelectedValue("");
             }}
@@ -171,15 +226,9 @@ function Monster() {
             Annuler la recherche
           </Button>
         )}
-      </ul>
+      </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "row",
-        }}
-      >
+      <ul className="monster-render">
         {monsters.length > 0 ? (
           monsters
             .filter(
@@ -192,7 +241,7 @@ function Monster() {
         ) : (
           <p>No monsters found</p>
         )}
-      </div>
+      </ul>
     </div>
   );
 }

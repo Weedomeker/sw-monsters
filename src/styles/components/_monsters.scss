@@ -1,0 +1,101 @@
+.monsters {
+  text-align: center;
+
+
+  .buttonAnnuler {
+    margin-bottom: 20px;
+  }
+
+  .labelRange {
+    font-size: 0.8em;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .radio-container {
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    background: $color-3;
+    padding: 10px;
+    color: $white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.452);
+
+    input {
+      transform: translateY(1px);
+    }
+
+    label {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+  }
+  input[type="text"] {
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    border: 3px solid $color-1;
+    outline: none;
+    transition: 0.4s;
+    text-align: center;
+    width:200px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+
+    &:focus {
+      background: rgb(203, 203, 203);
+      border-radius: 10px;
+      color: $white;
+    }
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .monster-render {
+    padding: 0 5%;
+  }
+}
+
+.loading {
+ display: block;
+ justify-content: center;
+ position: absolute;
+ align-content: center;
+ align-items: center;
+ top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+ width: 35%;
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto ;
+    width: 100px;
+
+    
+    .image.show {
+      /* Styles de l'image lorsque la classe "show" est présente */
+      transition: opacity 1s ease-in-out;  /* On rend l'image visible */
+    }
+    
+    .image:not(.show) {
+      /* Styles de l'image lorsque la classe "show" n'est pas présente */
+      opacity: 0;  /* On rend l'image invisible */
+    }
+  }    
+  h2 {
+font-size: 14px;
+font-family: $font-1;
+text-transform: uppercase;
+letter-spacing: 4px;
+color: $white;
+p {
+  font-size: 18px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+}
+  }
+}

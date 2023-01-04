@@ -4,30 +4,28 @@ import { Menu } from "semantic-ui-react";
 
 const Navigation = () => {
   return (
-    <div
-      style={{
-        color: "orangered",
-        flexDirection: "column",
-        alignContent: "center",
-      }}
-    >
-      <Menu inverted tabular fluid stackable>
-        <Menu.Item link>
-          <NavLink to="/" style={{ color: "orangered", fontSize: "24px" }}>
-            Accueil
-          </NavLink>
-        </Menu.Item>
+    <div className="navigation">
+      <ul>
+        <Menu inverted fluid>
+          <Menu.Item link>
+            <NavLink
+              to="/"
+              className={(nav) => (nav.isActive ? "nav-active" : "")}
+            >
+              <li>Accueil</li>
+            </NavLink>
+          </Menu.Item>
 
-        <Menu.Item link>
-          <NavLink
-            to="/about"
-            style={{ color: "lightskyblue", fontSize: "24px" }}
-          >
-            À-propos
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item position="right"></Menu.Item>
-      </Menu>
+          <Menu.Item link>
+            <NavLink
+              to="/about"
+              className={(nav) => (nav.isActive ? "nav-active" : "")}
+            >
+              <li> À-propos</li>
+            </NavLink>
+          </Menu.Item>
+        </Menu>
+      </ul>
     </div>
   );
 };

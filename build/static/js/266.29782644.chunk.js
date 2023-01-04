@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunksw_monster=self.webpackChunksw_monster||[]).push([[266],{1266:function(e,n,s){s.r(n);var r=s(2791),i=s(8434),t=s(184),l=r.lazy((function(){return Promise.all([s.e(299),s.e(147)]).then(s.bind(s,9381))}));n.default=function(){return(0,t.jsxs)("div",{children:[(0,t.jsx)(i.Z,{}),(0,t.jsx)(r.Suspense,{fallback:(0,t.jsx)("div",{children:"Loading Monsters...."}),children:(0,t.jsx)(l,{})})]})}}}]);
+//# sourceMappingURL=266.29782644.chunk.js.map

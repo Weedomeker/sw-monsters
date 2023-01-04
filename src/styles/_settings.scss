@@ -1,35 +1,68 @@
+
 @font-face {
-  font-family: "title-font";
-  src: url(../assets/fonts/Raleway-ExtraBold.ttf);
+  font-family: "font-1";
+  src: url(../assets/fonts/Raleway/Raleway-Medium.ttf);
 }
 
-$title-font: "title-font", sans-serif;
+$font-1: "font-1", sans-serif;
 
-$color1: skyblue;
-$title-color: rgb(165, 165, 165);
-$txt-color: rgb(241, 241, 241);
-$bg-color: rgb(40, 40, 40);
+$color-1: #61dafb;
+$color-2: salmon;
+$color-3: #282c34;
+$white: rgb(243, 243, 243);
+
+@mixin verticalCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
 body {
-  background: $bg-color;
-  color: $txt-color;
-  //margin: 0 15%;
+  background: rgb(49, 49, 49);
+  font-family: $font-1;
+  
 }
-
-h1 {
-  font-family: $title-font;
-  text-transform: uppercase;
-  letter-spacing: 6px;
-  color: $title-color;
-  font-size: 34px;
-  padding: 0 35%;
-  margin-top: 50px;
+li {
+  list-style-type: none;
 }
 
 p {
-  color: $txt-color;
-  flex: content;
-  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: justify;
-  padding: 0 35%;
+  font-size: 0.9em;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0 35%;
+  color:$white;
+
 }
+
+h1 {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0 35%;
+  padding-top: 40px;
+  padding-bottom: 25px;
+  color: rgb(149, 149, 149);
+}
+
+@media only screen and (max-width: 480px) {
+  .monsters {
+    .radio-container {
+      flex-direction: column;
+    }
+    input[type="text"] {
+      width: 100%;
+    }
+  }
+}
+
